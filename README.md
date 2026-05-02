@@ -1,166 +1,61 @@
-# cagdass.dev
+# cagdass.dev - Portfolio & CMS
 
-Yusuf Çağdaş için düşük kaynak tüketimli Next.js portfolyo sitesi ve dosya tabanlı mini CMS.
+Bu proje, Çağdaş'ın kişisel web sitesi ve portfolyosu (cagdass.dev) için Next.js ile geliştirilmiş modern, dinamik ve esnek bir web platformudur. Proje aynı zamanda yerleşik bir CMS (İçerik Yönetim Sistemi) ve i18n (çoklu dil) desteğine sahiptir.
 
-## Yapı
+## 🚀 Proje Özellikleri
 
-- Ana site: `https://cagdass.dev`
-- WWW: `https://www.cagdass.dev`
-- CasaOS paneli: `https://panel.cagdass.dev` ayrı kalır
-- Site admin paneli: `/cg38`
-- İçerik dosyası: `data/site-content.json`
-- Otomatik içerik yedekleri: `data/backups/`
-- Yüklenen görseller: `public/uploads/`
+- **Modern Mimari:** Next.js 16 (App Router), React 19 ve TypeScript kullanılarak geliştirildi.
+- **Stil & Tasarım:** Tailwind CSS, Radix UI, Framer Motion animasyonları ile temiz, hızlı ve duyarlı (responsive) UI.
+- **Çoklu Dil (i18n):** Türkçe ve İngilizce desteği, `react-i18next` ve `i18next` kullanılarak sağlanan dinamik dil değiştirme.
+- **Yerleşik CMS:** Dinamik içerik yönetimi. İçerikler (makaleler, projeler vs.) `data/site-content.json` dosyasında tutulur ve kendi yönetim paneli üzerinden güncellenebilir.
+- **Güvenlik:** API'ler, `rateLimit`, Cloudflare bazlı kontroller ve özel yetkilendirme (`lib/cmsAuth.ts`, `lib/cloudflareAccess.ts`) ile güvence altına alındı.
+- **Karanlık/Aydınlık Tema:** `next-themes` kullanılarak kolay geçiş.
+- **İkonlar & Bileşenler:** HugeIcons, Radix Primitives, Lucide ve DevIcons destekleri.
 
-## Güvenlik
+## 📂 Klasör Yapısı
 
-- Admin paneli kullanıcı adı ve şifre ile korunur.
-- Admin girişinde Google Authenticator / Microsoft Authenticator uyumlu 6 haneli TOTP 2FA zorunludur.
-- Login, içerik kaydı ve upload API uçlarında rate limiting vardır.
-- Upload sadece PNG, JPG, WEBP ve SVG görsel kabul eder.
-- Dosya türü yalnızca MIME ile değil dosya içeriğiyle de doğrulanır.
-- Admin cookie `httpOnly`, `sameSite=strict` ve production ortamında `secure` olarak yazılır.
-- Cloudflare Access için hazırdır.
+- **/src/app:** Next.js App Router yapısı (Sayfalar, API route'ları, layoutlar).
+- **/src/components:** Yeniden kullanılabilir React UI bileşenleri.
+- **/src/locales:** Dil çeviri dosyaları (JSON formatında, `en` ve `tr`).
+- **/src/lib:** Yardımcı fonksiyonlar, yetkilendirme, rate limit ve diğer arka plan iş mantıkları.
+- **/src/hooks:** Özelleştirilmiş React hook'ları (örn. Site içeriklerini yönetmek için `useSiteContent.ts`).
+- **/data:** Sitenin içeriğini barındıran `site-content.json` dosyası ve otomatik alınan yedekler (`backups` klasöründe).
+- **/scripts:** Güvenlik ve yapılandırma amaçlı dış Node.js betikleri.
+- **/nginx:** Projenin canlı sunucu üzerindeki reverse-proxy Reverse Proxy konfigürasyonları.
 
-Cloudflare Access kullanacaksan:
+## 🛠 Kurulum ve Çalıştırma
 
-1. Cloudflare Zero Trust içinde bir Access Application oluştur.
-2. Path olarak şunları koru:
-   - `cagdass.dev/cg38*`
-   - `cagdass.dev/api/cms/*`
-3. `.env` içinde `CF_ACCESS_REQUIRED=true` yap.
-4. İstersen `CF_ACCESS_ALLOWED_EMAILS=mail1@example.com,mail2@example.com` ekle.
+Projeyi kendi bilgisayarınızda çalıştırmak için:
 
-Not: Cloudflare Access header doğrulaması, origin dış dünyaya açık değilken anlamlıdır. Docker compose portu sadece `127.0.0.1:3000` olarak açar; Cloudflare Tunnel/Nginx dışındaki doğrudan erişimi açma.
+1. Depoyu klonlayın:
+   ```bash
+   git clone https://github.com/ycagdass/cagdass.dev-web.git
+   ```
 
-## Kurulum
+2. Gerekli kütüphaneleri yükleyin:
+   ```bash
+   npm install
+   ```
 
-Sunucuda hedef dizin:
+3. Geliştirme (development) sunucusunu başlatın:
+   ```bash
+   npm run dev
+   ```
 
-```bash
-mkdir -p /home/c/website
-cd /home/c/website
-```
+4. Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresine giderek siteyi görüntüleyin.
 
-Projeyi bu dizine koy. Sonra `.env` oluştur:
+## 📝 Kullanılan Teknolojiler
 
-```bash
-cp .env.example .env
-```
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Framer Motion
+- Radix UI
+- i18next & react-i18next
+- Sonner (Bildirimler için)
 
-Güçlü şifre hash'i üret:
-
-```bash
-node scripts/hash-password.mjs "güçlü-admin-şifren"
-```
-
-Çıktıyı `.env` içindeki `ADMIN_PASSWORD_HASH` alanına yaz. Ayrıca `ADMIN_SESSION_SECRET` için uzun rastgele bir değer kullan:
-
-```bash
-openssl rand -hex 32
-```
-
-Authenticator için TOTP secret ve otpauth URL üret:
-
-```bash
-npm run totp:setup
-```
-
-Çıktıdaki `ADMIN_TOTP_SECRET=...` değerini `.env` içine yaz:
-
-```env
-ADMIN_TOTP_SECRET=ÜRETİLEN_BASE32_SECRET
-```
-
-Çıktıdaki `OTPAUTH_URL=otpauth://...` adresini Google Authenticator veya Microsoft Authenticator uygulamasına ekle. Uygulama manuel kurulum istiyorsa aynı `ADMIN_TOTP_SECRET` değerini kurulum anahtarı olarak gir; tür `time-based`, hane sayısı `6`, süre `30 saniye` olmalı.
-
-## Docker ile Çalıştırma
-
-```bash
-docker compose up -d --build
-```
-
-Kontrol:
-
-```bash
-docker compose ps
-curl -I http://127.0.0.1:3000
-```
-
-Loglar:
-
-```bash
-docker compose logs -f --tail=100
-```
-
-## Nginx
-
-Örnek config: `nginx/cagdass.dev.conf`
-
-CasaOS paneli `panel.cagdass.dev` olarak ayrı kalmalı. Ana site için Cloudflare Tunnel veya Nginx yönlendirmesi `127.0.0.1:3000` hedefine gitmeli.
-
-## İçerik Yönetimi
-
-Admin panel:
-
-```text
-https://cagdass.dev/cg38
-```
-
-Panelden şunlar düzenlenebilir:
-
-- Ana sayfa başlığı ve açıklaması
-- Hakkımda metni
-- Logo ve profil görseli
-- Sosyal bağlantılar
-- Projeler
-- Bölüm görünürlükleri
-
-Giriş için kullanıcı adı, şifre ve Authenticator uygulamasındaki güncel 6 haneli doğrulama kodu birlikte gerekir. Şifre doğru olsa bile TOTP kodu hatalıysa oturum açılmaz; bu denemeler login rate limit sınırına dahildir.
-
-Eski `/ycg-control-38` yolu kullanılmaz; admin panel sadece `/cg38` altında çalışır.
-
-Değişiklikler `data/site-content.json` içine kalıcı yazılır. Her kayıt öncesi `data/backups/` altında yedek alınır.
-
-## Düşük Kaynak Ayarları
-
-Docker compose:
-
-- Runtime bellek limiti: `768m`
-- CPU limiti: `1.0`
-- Next standalone output kullanılır.
-- Node runtime `--max-old-space-size=512` ile sınırlandırılır.
-- İçerik JSON dosyası veritabanı gerektirmez.
-
-8GB RAM laptop için bu yapı yeterince hafiftir. Aynı makinede CasaOS, Docker ve Cloudflare Tunnel çalışırken de stabil kalması hedeflenmiştir.
-
-## Yedekleme
-
-En önemli klasörler:
-
-```text
-data/
-public/uploads/
-.env
-```
-
-Öneri:
-
-```bash
-tar -czf cagdass-site-backup-$(date +%F).tar.gz data public/uploads .env
-```
-
-## Güncelleme
-
-```bash
-docker compose down
-docker compose up -d --build
-```
-
-## Geliştirme
-
-```bash
-npm install
-npm run dev
-npm run typecheck
-```
+## 📌 Son Güncellemeler
+- Proje dosyaları temizlenerek `.gitignore` yapılandırması ayarlandı.
+- Next.js önbellek (`.next`) ve modül dosyaları (`node_modules`) dışarıda bırakılarak GitHub gereksiz yüklerden arındırıldı.
+- Kapsamlı bir `README.md` dosyası oluşturularak açıklama kısımları dolduruldu.
