@@ -1,0 +1,27 @@
+services:
+  cagdass-site:
+    build: .
+    container_name: cagdass-site
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SITE_URL: https://cagdass.dev
+      CONTENT_BACKUP_KEEP: 30
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET}
+      ADMIN_TOTP_SECRET: ${ADMIN_TOTP_SECRET}
+      ADMIN_LOGIN_RATE_LIMIT: 5
+      ADMIN_SAVE_RATE_LIMIT: 30
+      ADMIN_UPLOAD_RATE_LIMIT: 10
+      CF_ACCESS_REQUIRED: ${CF_ACCESS_REQUIRED:-false}
+      CF_ACCESS_ALLOWED_EMAILS: ${CF_ACCESS_ALLOWED_EMAILS:-}
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads
+    ports:
+      - "127.0.0.1:3000:3000"
+    mem_limit: 768m
+    cpus: 1.0
+    security_opt:
+      - no-new-privileges:true

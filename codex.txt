@@ -1,0 +1,333 @@
+PROJECT_MEMORY.md dosyasını oku. Siteyi tekrar baştan tarama. Sadece ana sayfa hero, footer, admin panel UI, teknolojiler yönetimi ve yazılar/articles sistemiyle ilgili dosyalara git.
+
+Bu görev projenin son büyük düzeltme turu olacak. Amaç: public site ve admin panelde kalan son kullanım/hata problemlerini düzeltmek.
+
+GENEL KURALLAR:
+- Önce kısa plan yaz.
+- Gereksiz refactor yapma.
+- Mevcut koyu tema tasarımını bozma.
+- Yeni ağır UI kütüphane ekleme.
+- Güvenliği düşürme.
+- .env değerlerini çıktıya yazma.
+- /api/cms/* Cloudflare Access’e tekrar alınmayacak.
+- CF_ACCESS_REQUIRED=false mantığını bozma.
+- Admin login, session, TOTP, kaydetme ve upload akışını bozma.
+- data/site-content.json, data/backups ve public/uploads yazılabilir kalmalı.
+- Büyük veri dönüşümü gerekiyorsa önce sor.
+- Geriye uyumluluk korunmalı.
+- Değişikliklerden sonra PROJECT_MEMORY.md güncelle.
+- Değiştirdiğin dosyaları ve nedenini açıkla.
+
+TEKNİK BAĞLAM:
+- Proje Next.js App Router kullanıyor.
+- Admin panel: /cg38
+- Ana site: /
+- Hakkımda: /about
+- Projeler: /projects
+- Yazılar: /articles
+- Yazı detayları hedef route: /articles/[slug]
+- İçerik: data/site-content.json
+- Upload klasörü: public/uploads
+- CMS API: /api/cms/*
+- Cloudflare Access sadece /cg38* üzerinde.
+- /api/cms/* Cloudflare Access dışında kalmalı.
+- CF_ACCESS_REQUIRED=false kalmalı.
+- Docker container: cagdass-site
+- Container kullanıcısı: nextjs uid=100 gid=101
+
+SORUN 1 — ANA SAYFA HERO BAŞLIĞI SÜREKLİ DEĞİŞİYOR:
+Ana sayfadaki büyük başlık typewriter/dinamik kelime efektiyle değişiyor. Kullanıcı bunu istemiyor.
+
+İstenen:
+- Varsayılan olarak sadece şu sabit metin görünsün:
+  “Yusuf Çağdaş'ın dünyasına hoş geldin”
+- Typewriter/dinamik başlık varsayılan olarak kapalı olsun.
+- Admin panelden aç/kapat yapılabilsin.
+- Admin panelde “Ana Sayfa Başlığı” alanı olsun.
+- Hero açıklaması admin panelden düzenlenebilir kalsın.
+- Typewriter kelimeleri varsa sadece “Gelişmiş” bölümünde dursun.
+- Typewriter kapalıyken hiçbir kelime dönüşümü olmasın.
+- Public ana sayfada sadece heroTitle gösterilsin.
+
+SORUN 2 — FOOTER / EN ALT KISIM DÜZGÜN DEĞİL:
+Footer metni şu an amatör görünüyor:
+“© 2026 ycagdass. Created by ycagdass”
+
+İstenen varsayılan footer metni:
+“© 2026 Yusuf Çağdaş. Tüm hakları saklıdır.”
+
+Yap:
+- Footer metni admin panelden düzenlenebilir olsun.
+- Footer sosyal ikonları sadece ilgili link varsa görünsün.
+- Boş sosyal link varsa ikon gösterme.
+- Footer hizalaması, boşlukları ve mobil görünümü düzgün olsun.
+- Koyu tema korunmalı.
+
+SORUN 3 — YAZILAR / ARTICLES SAYFASI HATALI:
+Yazılar sayfasında yazı kartları görünüyor ama:
+- Yazı kartına tıklayınca detay sayfasına gidilmiyor.
+- Yazı detay sayfası yoksa oluşturulmalı.
+- Bazı yazılarda görsel alanı kırık/boş görünüyor.
+- Görsel yoksa kırık img veya alt text gibi görünen bozuk alan oluşmamalı.
+- Kartın tamamı tıklanabilir olmalı.
+
+Yap:
+- /articles sayfasındaki her yazı kartı tamamen tıklanabilir olsun.
+- Link hedefi: /articles/{slug}
+- /articles/[slug] route’u yoksa oluştur.
+- Detay sayfasında yazı gösterilsin.
+- Slug yoksa başlıktan güvenli slug üret.
+- Slug çakışmasını engelle.
+- Slug boş olamaz.
+- Yayında olmayan yazılar public /articles sayfasında görünmesin.
+- Yayında olmayan yazı detayına gidilirse 404 dönsün.
+- Bulunamayan slug 404 dönsün.
+- Yazı kartlarında kırık img gösterme.
+- imageUrl boşsa veya geçersizse görsel alanını gizle veya düzgün placeholder göster.
+- Görsel alanı kartı aşırı büyütmesin.
+- Görsel varsa aspect-video veya h-48 gibi kontrollü oran kullan.
+- Görsel varsa object-cover kullan.
+- Görsel alt text yazı başlığından gelsin.
+- Görsel yoksa kırık ikon/alt text görüntüsü oluşmasın.
+- Kart hover/focus düzgün olsun.
+- Keyboard erişilebilirliği olsun.
+- Mobilde tek kolon, desktopta düzgün grid olsun.
+- Kart içerikleri taşmasın.
+
+Yazı detay sayfasında gösterilecek alanlar:
+- başlık
+- tarih
+- kategori
+- etiketler
+- okuma süresi
+- kapak görseli varsa
+- içerik
+- geri dön linki
+
+SEO:
+- /articles/[slug] için metadata ekle:
+  - title
+  - description
+  - openGraph
+  - twitter
+
+Admin yazılar tarafında:
+- Yazı ekleme/düzenleme sırasında imageUrl doğru kaydediliyor mu kontrol et.
+- Upload sonrası dönen URL article imageUrl alanına doğru yazılıyor mu kontrol et.
+- imageUrl formatı /uploads/dosyaadi.ext olmalı.
+- Harici URL destekleniyorsa kırık görüntüye sebep olmasın.
+- Slug alanı boşsa başlıktan otomatik üret.
+- Başlık değişince mevcut slug gereksiz bozulmasın.
+- published default true veya mevcut mantığa uygun olsun.
+- tags array olsun.
+- readingTime tutarlı olsun.
+- date YYYY-MM-DD veya ISO olarak tutarlı olsun.
+
+SORUN 4 — ADMIN PANEL ÇOK KARIŞIK:
+Admin panel özellikle “Teknolojiler” sekmesinde çok uzun ve karmaşık. Tüm teknolojilerin inputları aynı anda açık görünüyor. Bu kullanılabilir değil.
+
+Yap:
+- Admin paneli sadeleştir.
+- Sekmeler net olsun:
+  - Genel
+  - Ana Sayfa
+  - Hakkımda
+  - Teknolojiler
+  - Projeler
+  - Yazılar
+  - Medya
+  - Ayarlar
+- Her sekmede sadece ilgili alanlar görünsün.
+- Uzun listeler kompakt kart/accordion şeklinde olsun.
+- Tüm inputlar aynı anda açık durmasın.
+- Düzenleme sadece “Düzenle” butonuna basınca açılsın.
+- Kaydet butonu üstte ve altta erişilebilir olsun.
+- Başarılı/hatalı kayıt mesajları anlaşılır olsun.
+- Mobilde taşma olmasın.
+- Mevcut dark tema korunmalı.
+
+SORUN 5 — TEKNOLOJİLER YÖNETİMİ BASİTLEŞTİRİLECEK:
+Teknoloji ekleme ve ikon/logo mantığı anlaşılmıyor.
+
+Yeni yapı:
+- “Yeni Teknoloji Ekle” butonu olsun.
+- Butona basınca küçük form veya modal açılsın.
+- Alanlar:
+  - Ad
+  - Kategori
+  - Açıklama / seviye
+  - Icon key
+  - Icon URL
+  - Görünür mü?
+- Kullanıcı “Ekle”ye basınca confirm çıksın:
+  “Bu teknoloji eklensin mi?”
+- Onay verirse eklensin.
+- İptal ederse eklenmesin.
+- Silmede confirm çıksın:
+  “Bu teknoloji silinsin mi?”
+- Liste kompakt olsun.
+- Her kartta:
+  - Ad
+  - Kategori
+  - Görünür/Gizli durumu
+  - Düzenle
+  - Sil
+  - Yukarı/Aşağı taşı
+- Inputlar sadece düzenleme modunda görünsün.
+
+İkon/logo mantığı:
+- iconUrl varsa onu kullan.
+- iconUrl yoksa iconKey ile mevcut icon mapping varsa onu kullan.
+- iconKey hatalıysa site bozulmasın.
+- İkon yoksa kırık img gösterme.
+- Teknoloji adı her durumda görünsün.
+- Admin panelde şu yardım metni olsun:
+  “İkon için kısa bir icon key yazabilirsin. Emin değilsen boş bırak; teknoloji adı yine görünür.”
+- Logo/görsel URL alanlarında açıklama olsun.
+- Upload sonrası hangi alana URL yazıldığı açık olsun.
+- “Bu görseli kullan” gibi basit bir buton varsa iyi olur.
+
+SORUN 6 — /ABOUT TEKNOLOJİLER GÖRÜNÜMÜ:
+- Sadece visible/published/görünür olan teknolojiler gösterilsin.
+- Sıralama order’a göre olsun.
+- İkon yoksa sadece teknoloji adı gösterilsin.
+- Kırık ikon/görsel oluşmasın.
+- Kategoriye göre gruplanıyorsa mevcut yapı korunabilir.
+- Mevcut koyu tema bozulmasın.
+
+İNCELEMEK İÇİN ÖNCELİKLİ DOSYALAR:
+- src/app/page.tsx
+- src/app/about/page.tsx
+- src/app/articles/page.tsx
+- src/app/articles/layout.tsx
+- src/app/articles/[slug]/page.tsx varsa
+- src/app/cg38/page.tsx
+- src/components/LayoutShell.tsx
+- src/components/Navbar.tsx
+- src/components/Footer.tsx veya footer hangi dosyadaysa
+- src/lib/siteContent.ts
+- src/lib/siteContentShared.ts
+- src/app/api/cms/content/route.ts
+- src/app/api/cms/upload/route.ts
+- data/site-content.json
+- src/app/globals.css
+- src/app/sitemap.ts
+
+YAPILACAK TEKNİK DÜZELTMELER:
+
+A) Data model:
+- siteContentShared tiplerini güvenli şekilde güncelle.
+- Eski data/site-content.json bozulmasın.
+- Eksik alanlara default değer ver.
+
+Articles için en az şu alanları destekle:
+- id
+- title
+- slug
+- excerpt
+- content
+- imageUrl
+- category
+- tags
+- date
+- readingTime
+- published
+- featured
+- order
+
+Technologies için en az şu alanları destekle:
+- id
+- name
+- category
+- description veya level
+- iconKey
+- iconUrl
+- visible
+- order
+
+Footer için:
+- footerText
+- footer sosyal bağlantıları mevcut sosyal alanlarla uyumlu çalışsın
+
+Hero için:
+- heroTitle
+- heroDescription
+- enableTypewriter
+- typewriterWords
+
+B) Normalize/default fonksiyonları:
+- İçerik okunurken eksik alanları normalize et.
+- Bozuk/hatalı imageUrl kırık img üretmesin.
+- Slug yoksa güvenli slug üret.
+- Aynı slug varsa benzersiz hale getir.
+- published/visible defaultları mantıklı olsun.
+
+C) Articles public route:
+- /articles kartları tıklanabilir olsun.
+- /articles/[slug] detay sayfası çalışsın.
+- 404 davranışları doğru olsun.
+- Kırık görsel olmasın.
+- SEO metadata eklensin.
+- Sitemap’e published yazı detayları eklenebiliyorsa ekle.
+
+D) Admin panel:
+- Hero ayarları düzenlenebilir olsun.
+- Footer düzenlenebilir olsun.
+- Articles yazı ekleme/düzenleme/silme/published/imageUrl/slug çalışsın.
+- Technologies UI sadeleşsin.
+- Confirm akışları eklensin.
+- Admin panel daha düzenli ve anlaşılır hale gelsin.
+
+TESTLER:
+Değişikliklerden sonra sırayla çalıştır:
+- npm run typecheck
+- npm run build
+- sudo docker compose up -d --build
+- curl -I http://127.0.0.1:3000
+- curl -I http://127.0.0.1:3000/about
+- curl -I http://127.0.0.1:3000/articles
+- curl -I http://127.0.0.1:3000/cg38
+- varsa gerçek slug ile:
+  curl -I http://127.0.0.1:3000/articles/test
+
+Canlı test:
+- curl -I https://cagdass.dev
+- curl -I https://cagdass.dev/about
+- curl -I https://cagdass.dev/articles
+- curl -I https://cagdass.dev/articles/test veya gerçek slug
+
+Yazma izinleri:
+sudo docker compose exec cagdass-site sh -c 'test -w /app/data/site-content.json && echo "site-content yazılabilir" || echo "site-content yazılamıyor"'
+sudo docker compose exec cagdass-site sh -c 'test -w /app/data/backups && echo "backups yazılabilir" || echo "backups yazılamıyor"'
+sudo docker compose exec cagdass-site sh -c 'test -w /app/public/uploads && echo "uploads yazılabilir" || echo "uploads yazılamıyor"'
+
+MCP/Tarayıcı kontrolü varsa:
+- Ana sayfada hero başlığı artık değişmiyor mu kontrol et.
+- Varsayılan başlık sadece “Yusuf Çağdaş'ın dünyasına hoş geldin” olmalı.
+- Footer düzgün görünüyor mu kontrol et.
+- /articles kartları tıklanınca detay sayfasına gidiyor mu kontrol et.
+- /articles sayfasında kırık görsel var mı kontrol et.
+- /articles/[slug] detay sayfası açılıyor mu kontrol et.
+- Admin panel teknolojiler sekmesi kompakt mı kontrol et.
+- Teknoloji ekleme confirm çıkarıyor mu kontrol et.
+- Teknoloji silme confirm çıkarıyor mu kontrol et.
+- /about sayfasında kırık ikon/görsel var mı kontrol et.
+
+PROJECT_MEMORY.md güncelle:
+- Hero/typewriter değişikliği
+- Footer yönetimi
+- Articles detay route düzeltmesi
+- Article imageUrl/kırık görsel düzeltmesi
+- Article kart tıklanabilirlik düzeltmesi
+- Teknoloji admin UI sadeleştirmesi
+- Teknoloji ikon mantığı
+- Test sonuçları
+- Kalan işler
+
+ÇIKTI:
+İş bitince şunları özetle:
+- Değişen dosyalar
+- Düzeltilen hatalar
+- Test sonuçları
+- Kalan riskler
+- Manuel test etmem gereken adımlar

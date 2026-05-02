@@ -1,0 +1,462 @@
+{
+  "site": {
+    "name": "Yusuf Çağdaş",
+    "brand": "ycagdass",
+    "domain": "cagdass.dev",
+    "logoUrl": "/ycagdass-logo.png",
+    "profileImageUrl": "/ycagdass.jpg",
+    "githubUrl": "https://github.com/ycagdass",
+    "telegramUrl": "https://t.me/neurocagdas",
+    "instagramUrl": "https://instagram.com/cagdassme",
+    "email": "yusuf38cagdas@gmail.com",
+    "footerText": "© 2026 Yusuf Çağdaş. Tüm hakları saklıdır."
+  },
+  "home": {
+    "heroTitle": "Yusuf Çağdaş'ın dünyasına hoş geldin",
+    "heroDescription": "Yazılım, elektronik ve 3D tasarım alanlarında öğrendiklerimi projeye dönüştürdüğüm kişisel alanım.....",
+    "enableTypewriter": false,
+    "titleLine1": "Yusuf Çağdaş'ın dünyasına",
+    "titleLine2": "hoş geldin",
+    "typewriterWords": [
+      "hoş geldin",
+      "projelerime bak",
+      "notlarımı oku"
+    ],
+    "description": "Yazılım, elektronik ve 3D tasarım alanlarında öğrendiklerimi projeye dönüştürdüğüm kişisel alanım.....",
+    "primaryButtonLabel": "Hakkımda",
+    "primaryButtonHref": "/about",
+    "secondaryButtonLabel": "Projelerim",
+    "secondaryButtonHref": "/projects",
+    "articlesButtonLabel": "Yazılarım",
+    "articlesButtonHref": "/articles"
+  },
+  "about": {
+    "title": "Hakkımda",
+    "name": "Yusuf Çağdaş",
+    "subtitle": "   Created by ycagdass ❤️",
+    "body": "Ben Yusuf Çağdaş. Lise öğrencisiyim; yazılım, elektronik ve 3D tasarım alanlarında kendimi geliştiriyorum. Arduino, mikrodenetleyiciler, web teknolojileri ve CAD modelleme ile fikirlerimi çalışan prototiplere dönüştürmeyi seviyorum. Yarışmalar, kişisel projeler ve denemeler üzerinden öğreniyor; her projede daha temiz, kullanışlı ve üretilebilir çözümler kurmaya çalışıyorum.",
+    "profileTitle": "Yusuf Çağdaş",
+    "profileSubtitle": "   Created by ycagdass ❤️",
+    "skills": [
+      "Yazılım",
+      "Elektronik",
+      "3D Tasarım"
+    ],
+    "experience": "",
+    "education": "",
+    "certifications": ""
+  },
+  "technologies": {
+    "title": "Araçlar ve Teknolojiler",
+    "items": [
+      {
+        "id": "c",
+        "name": "C",
+        "iconKey": "c",
+        "iconUrl": "",
+        "category": "Yazılım",
+        "description": "",
+        "visible": true,
+        "order": 0
+      },
+      {
+        "id": "python",
+        "name": "Python",
+        "iconKey": "python",
+        "iconUrl": "",
+        "category": "Yazılım",
+        "description": "",
+        "visible": true,
+        "order": 1
+      },
+      {
+        "id": "react",
+        "name": "React",
+        "iconKey": "react",
+        "iconUrl": "",
+        "category": "Web",
+        "description": "",
+        "visible": true,
+        "order": 2
+      },
+      {
+        "id": "nodejs",
+        "name": "Node.js",
+        "iconKey": "nodejs",
+        "iconUrl": "",
+        "category": "Web",
+        "description": "",
+        "visible": true,
+        "order": 3
+      },
+      {
+        "id": "vscode",
+        "name": "VS Code",
+        "iconKey": "vscode",
+        "iconUrl": "",
+        "category": "Araç",
+        "description": "",
+        "visible": true,
+        "order": 4
+      },
+      {
+        "id": "git",
+        "name": "Git",
+        "iconKey": "git",
+        "iconUrl": "",
+        "category": "Araç",
+        "description": "",
+        "visible": true,
+        "order": 5
+      },
+      {
+        "id": "arduino",
+        "name": "Arduino",
+        "iconKey": "https://cdn.simpleicons.org/arduino/00979d",
+        "iconUrl": "",
+        "category": "Elektronik",
+        "description": "",
+        "visible": true,
+        "order": 6
+      },
+      {
+        "id": "raspberry-pi",
+        "name": "Raspberry Pi",
+        "iconKey": "https://cdn.simpleicons.org/raspberrypi/a22082",
+        "iconUrl": "",
+        "category": "Elektronik",
+        "description": "",
+        "visible": true,
+        "order": 7
+      },
+      {
+        "id": "stm32",
+        "name": "STM32",
+        "iconKey": "https://cdn.simpleicons.org/stmicroelectronics/03234b",
+        "iconUrl": "",
+        "category": "Elektronik",
+        "description": "",
+        "visible": true,
+        "order": 8
+      },
+      {
+        "id": "kicad",
+        "name": "KiCAD",
+        "iconKey": "https://cdn.simpleicons.org/kicad/314cb0",
+        "iconUrl": "",
+        "category": "Elektronik",
+        "description": "",
+        "visible": true,
+        "order": 9
+      },
+      {
+        "id": "solidworks",
+        "name": "Solidworks",
+        "iconKey": "/solidworks-logo.svg",
+        "iconUrl": "",
+        "category": "3D Tasarım",
+        "description": "",
+        "visible": true,
+        "order": 10
+      },
+      {
+        "id": "autocad",
+        "name": "AutoCAD",
+        "iconKey": "autocad",
+        "iconUrl": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/autocad-icon.png",
+        "category": "3D Tasarım",
+        "description": "",
+        "visible": true,
+        "order": 11
+      },
+      {
+        "id": "fusion-360",
+        "name": "Fusion 360",
+        "iconKey": "fusion",
+        "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Fusion360_Logo.svg/960px-Fusion360_Logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail&_=20250830031414",
+        "category": "3D Tasarım",
+        "description": "",
+        "visible": true,
+        "order": 12
+      },
+      {
+        "id": "blender",
+        "name": "Blender",
+        "iconKey": "blender",
+        "iconUrl": "",
+        "category": "3D Tasarım",
+        "description": "",
+        "visible": true,
+        "order": 13
+      },
+      {
+        "id": "docker",
+        "name": "Docker",
+        "iconKey": "docker",
+        "iconUrl": "",
+        "category": "Altyapı",
+        "description": "",
+        "visible": true,
+        "order": 14
+      },
+      {
+        "id": "postgresql",
+        "name": "PostgreSQL",
+        "iconKey": "postgresql",
+        "iconUrl": "",
+        "category": "Veri",
+        "description": "",
+        "visible": true,
+        "order": 15
+      },
+      {
+        "id": "firebase",
+        "name": "Firebase",
+        "iconKey": "firebase",
+        "iconUrl": "",
+        "category": "Veri",
+        "description": "",
+        "visible": true,
+        "order": 16
+      },
+      {
+        "id": "9d2c73cc-5f86-4076-a339-9a141c1a8f82",
+        "name": "C#",
+        "iconKey": "csharp",
+        "iconUrl": "https://gistcdn.githack.com/johndward01/95c1d09de9e3707cfb4154989962376d/raw/f74007782421219d9e9ab4b6a27de2e172a8b714/csharp-logo.svg",
+        "category": "Yazılım",
+        "description": "Temel",
+        "visible": true,
+        "order": 17
+      }
+    ]
+  },
+  "projects": {
+    "title": "Projeler",
+    "description": "Yazılım, elektronik ve tasarım tarafında geliştirdiğim projelerden seçtiklerim.",
+    "githubEnabled": false,
+    "githubUsername": "ycagdass",
+    "includeForks": false,
+    "items": [
+      {
+        "id": "portfolio",
+        "title": "cagdass.dev",
+        "description": "Kişisel portfolyo, projeler, yazılar ve iletişim alanlarını bir araya getiren modern web sitesi.",
+        "category": "Web",
+        "technologies": [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Tailwind"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass",
+        "githubFullName": "",
+        "website": "https://cagdass.dev",
+        "featured": true,
+        "published": true,
+        "source": "manual",
+        "order": 0,
+        "stars": 0,
+        "language": "",
+        "updatedAt": ""
+      },
+      {
+        "id": "c75864df-733c-4eb7-b9ef-dad443733572",
+        "title": "Islamic-Explorers-science-app",
+        "description": "Bilim İnsanları, Flutter ile geliştirilmiş tamamen responsive bir mobil eğitim uygulamasıdır. Harezmi, Ali Kuşçu, İbn-i Sina, Uluğ Bey ve Cahit Arf gibi İslam dünyasının öncü isimlerini; fotoğraf, detaylı biyografi, eserleri ve sesli anlatım ile tanıtır.",
+        "category": "Mobil",
+        "technologies": [
+          "Flutter",
+          "JS",
+          "CSS",
+          "HTML",
+          "Dart"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/Islamic-Explorers-science-app",
+        "githubFullName": "ycagdass/Islamic-Explorers-science-app",
+        "website": "",
+        "featured": true,
+        "published": true,
+        "source": "github",
+        "order": 1,
+        "stars": 2,
+        "language": "Dart",
+        "updatedAt": "2026-03-12T07:54:17Z"
+      },
+      {
+        "id": "github-ycagdass-cagdas-personal-sites",
+        "title": "cagdas-personal-sites",
+        "description": "c",
+        "category": "TypeScript",
+        "technologies": [
+          "TypeScript"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/cagdas-personal-sites",
+        "githubFullName": "ycagdass/cagdas-personal-sites",
+        "website": "https://cagdas-personal-sites.vercel.app",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1001,
+        "stars": 1,
+        "language": "TypeScript",
+        "updatedAt": "2025-08-06T19:41:31Z"
+      },
+      {
+        "id": "github-ycagdass-php-based-website-project",
+        "title": "PHP-based-website-project",
+        "description": "A website project created entirely with AI (Gemini)",
+        "category": "PHP",
+        "technologies": [
+          "PHP"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/PHP-based-website-project",
+        "githubFullName": "ycagdass/PHP-based-website-project",
+        "website": "",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1002,
+        "stars": 1,
+        "language": "PHP",
+        "updatedAt": "2025-08-06T19:21:59Z"
+      },
+      {
+        "id": "github-ycagdass-galaksi-simulasyonu",
+        "title": "Galaksi-Simulasyonu",
+        "description": "\"Galaxy Simulation\" is a strategy and exploration game in which players explore space, collect resources and complete missions.",
+        "category": "Makefile",
+        "technologies": [
+          "Makefile"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/Galaksi-Simulasyonu",
+        "githubFullName": "ycagdass/Galaksi-Simulasyonu",
+        "website": "",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1003,
+        "stars": 3,
+        "language": "Makefile",
+        "updatedAt": "2025-07-26T12:04:26Z"
+      },
+      {
+        "id": "github-ycagdass-hotel-management-system",
+        "title": "Hotel-Management-System",
+        "description": "A simple management system application for Hotels and Hostels ",
+        "category": "C#",
+        "technologies": [
+          "C#"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/Hotel-Management-System",
+        "githubFullName": "ycagdass/Hotel-Management-System",
+        "website": "",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1004,
+        "stars": 3,
+        "language": "C#",
+        "updatedAt": "2025-06-20T18:29:34Z"
+      },
+      {
+        "id": "github-ycagdass-usermanagementpanel",
+        "title": "UserManagementPanel",
+        "description": "A simple C# Windows Forms application that allows users to register, view, and manage user records with image support using a local SQL Server database.",
+        "category": "C#",
+        "technologies": [
+          "C#"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/UserManagementPanel",
+        "githubFullName": "ycagdass/UserManagementPanel",
+        "website": "",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1005,
+        "stars": 4,
+        "language": "C#",
+        "updatedAt": "2025-06-06T10:38:50Z"
+      },
+      {
+        "id": "github-ycagdass-web-sites",
+        "title": "web_sites",
+        "description": "The files of my personal website are open source.😊",
+        "category": "CSS",
+        "technologies": [
+          "CSS"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/web_sites",
+        "githubFullName": "ycagdass/web_sites",
+        "website": "https://web-sites-rust.vercel.app",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1006,
+        "stars": 1,
+        "language": "CSS",
+        "updatedAt": "2025-05-30T19:01:27Z"
+      },
+      {
+        "id": "github-ycagdass-web-based-patient-bed-control-software",
+        "title": "Web-based-Patient-Bed-Control-Software",
+        "description": "Patient bed control software with a card with Web support like esp32 ",
+        "category": "C++",
+        "technologies": [
+          "C++"
+        ],
+        "imageUrl": "",
+        "github": "https://github.com/ycagdass/Web-based-Patient-Bed-Control-Software",
+        "githubFullName": "ycagdass/Web-based-Patient-Bed-Control-Software",
+        "website": "",
+        "featured": true,
+        "published": false,
+        "source": "github",
+        "order": 1007,
+        "stars": 1,
+        "language": "C++",
+        "updatedAt": "2025-02-14T13:51:22Z"
+      }
+    ]
+  },
+  "articles": {
+    "title": "Paylaşımlarım",
+    "description": "Denediğim şeyleri, öğrendiğim detayları ve paylaşmaya değer bulduğum notları burada biriktiriyorum.",
+    "items": [
+      {
+        "id": "8a499988-bbd5-4c71-818d-8a4a7a5ec12e",
+        "title": "2026 - Kayseri TUA Astro Hackatkon",
+        "slug": "1",
+        "excerpt": "28-29 Mart tarihinde yapılan TUA astro hackathon",
+        "content": "Parçası olduğum bu deneyim bana çok şey kattı. Ekibimle yakaladığımız uyum sayesinde hem harika vakit geçirdik hem de çok değerli anılar biriktirdik. Gelecekte benzer projelerde yer almayı heyecanla bekliyorum.",
+        "imageUrl": "/uploads/1777733689695-4ccfb44c-44c7-4dd2-8adb-f4131a79ca0e.jpg",
+        "imageUrls": [],
+        "category": "Uzay, Uzay Bilimleri",
+        "tags": [
+          "Uzay",
+          "Uzay Bilimleri"
+        ],
+        "date": "2026-03-28",
+        "readingTime": "3",
+        "language": "tr",
+        "featured": true,
+        "published": true,
+        "order": 1
+      }
+    ]
+  },
+  "sections": {
+    "articlesEnabled": true,
+    "projectsEnabled": true,
+    "aboutEnabled": true,
+    "technologiesEnabled": true
+  }
+}

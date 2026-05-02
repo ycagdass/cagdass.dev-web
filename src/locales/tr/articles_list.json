@@ -1,0 +1,14 @@
+{
+  "loading": "Yazı listesi yükleniyor",
+  "pleaseWait": "Lütfen bekleyin...",
+  "allTitle": "Yazılarım",
+  "allDescription": "Burada yayınladığım tüm yazılarımı bulabilirsiniz",
+  "searchPlaceholder": "Yazılarda ara...",
+  "found": "{{count}} yazı bulundu",
+  "readDur": "{{minutes}} dk okuma",
+  "nPTitle": "Yazı bulunamadı",
+  "nPDesc": "Bu kriterlere uygun yazı bulunamadı. Arama terimlerini değiştirmeyi deneyin.",
+  "prev": "Önceki",
+  "next": "Sonraki",
+  "all": "Hepsi"
+}

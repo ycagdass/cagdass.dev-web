@@ -1,0 +1,30 @@
+{
+  "profile": {
+    "name": "Yusuf Çağdaş",
+    "subtitle": "High school student • Software • Electronics • 3D Design",
+    "photo": "Profile Photo"
+  },
+  "about": "I am Yusuf Çağdaş, a high school student interested in software, electronics, and 3D design. I like turning ideas into working prototypes with Arduino, microcontrollers, web technologies, and CAD modeling. I learn through competitions, personal projects, and experiments, and I try to make every project cleaner, more useful, and easier to build.",
+  "nav": {
+    "projects": "My Projects",
+    "articles": "My Articles",
+    "support": "Support Me",
+    "mail": "Mail",
+    "contactme": "Contact Me"
+  },
+  "stats": {
+    "stats": "Statistics",
+    "stars": "GitHub Stars",
+    "cont": "Contribution",
+    "contgraph": "Contribution Graph",
+    "repo": "Repository",
+    "act": "{{count}} Active",
+    "com": "Community"
+  },
+  "tool-tech": "Tools & Technologies",
+  "spotify": {
+    "playing": "Listening",
+    "open": "Open in Spotify"
+  },
+  "aboutMe": "Who am I?"
+}

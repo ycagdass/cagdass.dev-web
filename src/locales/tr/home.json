@@ -1,0 +1,12 @@
+{
+  "hero": {
+    "1": "Yusuf Çağdaş'ın dünyasına",
+    "2": "hoş geldin"
+  },
+  "heroButtons": {
+    "viewProjects": "Projelerim",
+    "aboutMe": "Hakkımda",
+    "readArticles": "Yazılarımı Oku"
+  },
+  "desc": "Bu sitede yazılarımı, projelerimi ve benimle ilgili her şeyi bulabilirsiniz!"
+}

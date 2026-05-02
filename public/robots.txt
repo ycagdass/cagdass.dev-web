@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap URL
+Sitemap: https://cagdass.dev/sitemap.xml

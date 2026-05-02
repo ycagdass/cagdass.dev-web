@@ -1,0 +1,485 @@
+# PROJE HAFIZASI
+
+Son guncelleme: 2026-05-02
+
+## Tech Stack
+- Framework: Next.js 16 App Router, React 19, TypeScript
+- CSS: Tailwind CSS 4, shadcn/Radix UI bilesenleri
+- State Management: React state/hooks, client-side `useSiteContent`
+- Database: Dosya tabanli JSON icerik (`data/site-content.json`)
+- Auth: Admin username + password hash + TOTP, signed httpOnly session cookie
+- i18n: i18next/react-i18next, `src/locales/tr` ve `src/locales/en`
+- Animation: framer-motion
+- Build/Deploy: `npm run build`, Next standalone Docker image
+- Docker: `docker-compose.yml`, container adi `cagdass-site`
+- Cloudflare: Cloudflare Tunnel; Access `/cg38*` uzerinde, `/api/cms/*` Access disinda kalmali
+- MCP: `chrome-devtools`, `playwright`, `browser-tools` Codex MCP config'e eklendi ve enabled gorunuyor
+
+## Dosya Yapisi
+- Sayfalar ve route'lari:
+  - `/`: `src/app/page.tsx`
+  - `/about`: `src/app/about/page.tsx`
+  - `/projects`: `src/app/projects/page.tsx`
+  - `/articles`: `src/app/articles/page.tsx`
+  - `/switch_lang`: `src/app/switch_lang/page.tsx`
+  - `/cg38`: `src/app/cg38/page.tsx`
+  - `/ycg-control-38`: `src/app/ycg-control-38/page.tsx`
+- API endpoint'leri:
+  - `/api/site-content`: `src/app/api/site-content/route.ts`
+  - `/api/cms/session`: `src/app/api/cms/session/route.ts`
+  - `/api/cms/login`: `src/app/api/cms/login/route.ts`
+  - `/api/cms/logout`: `src/app/api/cms/logout/route.ts`
+  - `/api/cms/content`: `src/app/api/cms/content/route.ts`
+  - `/api/cms/upload`: `src/app/api/cms/upload/route.ts`
+- Component listesi:
+  - Layout/nav: `Footer`, `Navbar`, `LayoutShell`, `LanguageSwitcher`, `ThemeSwitcher`, `NavigationItem`
+  - About: `ContentCards`, `MotionSpecs`, `ProfileCard`
+  - UI: `src/components/ui/*` Radix/shadcn tabanli bilesenler
+- Ceviri dosyalari:
+  - `src/locales/tr/*.json`
+  - `src/locales/en/*.json`
+- Admin panel dosyalari:
+  - Ana admin UI: `src/app/cg38/page.tsx`
+  - Auth: `src/lib/cmsAuth.ts`
+  - Cloudflare kontrolu: `src/lib/cloudflareAccess.ts`
+  - Rate limit: `src/lib/rateLimit.ts`
+  - Upload validasyonu: `src/lib/imageValidation.ts`
+- Icerik dosyalari:
+  - Ana icerik: `data/site-content.json`
+  - Varsayilan tipler/icerik: `src/lib/siteContentShared.ts`
+  - Okuma/yazma: `src/lib/siteContent.ts`
+- Upload klasorleri:
+  - `public/uploads` mevcut, taramada dosya gorunmedi
+- Docker dosyalari:
+  - `Dockerfile`
+  - `docker-compose.yml`
+  - `nginx/cagdass.dev.conf`
+
+## Site Analizi - MCP Sonuclari
+- Kurulum:
+  - `node -v`: v20.19.2
+  - `npm -v`: 9.2.0
+  - `npx --version`: 9.2.0
+  - `codex --version`: codex-cli 0.128.0
+  - Global npm ilk denemede `EACCES` verdi; `sudo npm install -g ...` ile MCP paketleri kuruldu
+  - Playwright icin once `chromium-1217`, sonra MCP'nin bekledigi `chromium-1222` indirildi
+- `codex mcp list`:
+  - `browser-tools`: enabled
+  - `chrome-devtools`: enabled
+  - `playwright`: enabled
+  - Bu terminal oturumunda `/mcp` UI dogrudan acilamiyor; kullanici `/mcp` ile gorunurlugu kontrol etmeli
+- HTTP durumlari:
+  - `https://cagdass.dev`: 200
+  - `https://cagdass.dev/projects`: 200
+  - `https://cagdass.dev/articles`: 200
+  - Sahte URL: 404
+  - `https://cagdass.dev/api/cms/session`: 200, Cloudflare Access redirect yok
+  - `https://cagdass.dev/cg38`: Cloudflare Access login ekranina yonleniyor, beklenen durum
+- Console hatalari:
+  - Public sayfalar desktop/mobile: console error yok
+  - `/cg38` Access ekraninda Cloudflare'in data SVG logosu CSP tarafindan engelleniyor; uygulama kodundan degil Cloudflare Access ekranindan geliyor
+- Network errors:
+  - Public sayfalarda failed request gorulmedi
+- 404 olan sayfalar:
+  - Bilincli sahte URL 404 dondu
+- Ceviri eksiklikleri TR/EN:
+  - `about`, `articles`, `articles_list`, `common`, `home`, `projects`, `switchlang` key sayilari eslesiyor; eksik key bulunmadi
+- Mobil sorunlar:
+  - Playwright temel mobil yukleme testinde failed request/console error yok
+  - Gorsel layout incelemesi derin yapilmadi
+- SEO sorunlari:
+  - Public sayfalarda title, meta description ve h1 mevcut
+  - `/projects` title'i ingilizce `Projects`; TR varsayilan deneyimde dil/tutarlilik kontrolu gerekebilir
+- Accessibility sorunlari:
+  - Temel h1 varlik kontrolu yapildi; derin axe testi yapilmadi
+- Performans notlari:
+  - HTTP header'larda Next prerender cache HIT goruldu
+- Admin panel UI sorunlari:
+  - Proje yonetimi form tabanli hale getirildi: ekle, duzenle, sil, siralama, proje gorseli, yayin/taslak ve one cikan kontrolleri var
+- Network/API sorunlari:
+  - `/api/cms/session` Access redirect yemiyor, 200 donuyor
+
+## Admin Panel Durumu
+- Mevcut ozellikler:
+  - Login formu: kullanici adi, sifre, TOTP
+  - Logout
+  - Site bilgileri, ana sayfa, hakkimda metinleri duzenleme
+  - Logo/profil gorseli upload
+  - Bolum toggle'lari: hakkimda, projeler, yazilar
+  - Projeler form tabanli duzenleniyor
+  - Proje ekle, sil, yukari/asagi sirala
+  - Proje gorseli URL/yukleme
+  - Yayinda/taslak toggle
+  - One cikan toggle
+- Eksikler:
+  - Manuel admin girisi sonrasi kaydetme/upload akisi canli veriyle test edilmeli
+- Login durumu:
+  - Cloudflare Access nedeniyle admin uygulamasina otomatik girilmedi; manuel Access + admin login gerekiyor
+- Session durumu:
+  - Signed httpOnly cookie (`ycg_admin_session`), 8 saat TTL
+- Kaydetme durumu:
+  - `writeSiteContent` mevcut dosyayi backup'a alip `data/site-content.json` yazar
+  - Eski EACCES sorunu icin host izinlerinin duzeltildigi proje notunda var; bu adimda veri degistiren kaydetme testi yapilmadi
+- Upload durumu:
+  - `/api/cms/upload`, `public/uploads` altina yazar
+  - 5 MB limit, MIME/signature validasyonu, rate limit var
+- API guvenlik durumu:
+  - CMS endpoint'leri admin session kontrolu yapiyor
+  - `verifyCloudflareAccess` `CF_ACCESS_REQUIRED=false` durumunda bypass edecek sekilde tasarlanmis
+  - Login/save/upload rate limit mevcut
+
+## Docker ve Kalicilik
+- `docker-compose.yml` volume durumu:
+  - `./data:/app/data`
+  - `./public/uploads:/app/public/uploads`
+- `/app/data` kalici mi?
+  - Evet, host `./data` volume olarak bagli
+- `/app/public/uploads` kalici mi?
+  - Evet, host `./public/uploads` volume olarak bagli
+- Container kullanici UID/GID:
+  - Proje notuna gore `uid=100(nextjs) gid=101(nextjs)`
+  - Dockerfile `addgroup -S nextjs && adduser -S nextjs -G nextjs` kullaniyor
+- Yazma izinleri:
+  - Proje notuna gore `data`, `data/backups`, `public/uploads` host izinleri 100:101 yapildi ve yazma testleri basarili
+- Backup:
+  - `data/backups` icinde 10 backup dosyasi goruldu
+
+## Yapilacaklar Listesi
+- [ ] Kritik hatalar: `/cg38` Access CSP uyarisi Cloudflare kaynakli; uygulama kritik hatasi gorulmedi
+- [x] Admin panel proje yonetimi: JSON textarea yerine form tabanli CRUD/siralama/yayin durumu
+- [ ] Icerik kaydetme: Manuel admin girisi sonrasi save akisi test edilmeli
+- [ ] Gorsel yukleme: Manuel admin girisi sonrasi upload akisi test edilmeli
+- [ ] Animasyonlar: Public sayfalarda temel yukleme tamam; derin UX kontrolu yapilmadi
+- [ ] Ceviri duzeltmeleri: Key eksigi yok; metin tutarliligi ayrica incelenmeli
+- [x] SEO duzeltmeleri: `/projects` title dili, about/projects metadata ve robots sitemap duzeltildi
+- [ ] Accessibility duzeltmeleri: GitHub icon link adi duzeltildi; axe/keyboard/focus testi ayrica yapilmali
+- [ ] Mobil uyumluluk: Gorsel screenshot incelemesi yapilmali
+- [ ] Performans iyilestirmeleri: Lighthouse veya benzeri olcum yapilmali
+- [x] Articles CMS: Yazilar data modeline ve admin panele eklendi, public `/articles` CMS verisini kullaniyor.
+- [x] Teknolojiler CMS: Hakkimda teknolojileri data modelinden ve admin panelden yonetiliyor.
+- [x] Hakkimda CMS alanlari: Profil karti, yetenekler, deneyim, egitim ve sertifika alanlari eklendi.
+
+## ADIM 3 Degisiklikleri
+- `src/lib/siteContentShared.ts`:
+  - `EditableProject` modeline geriye uyumlu `imageUrl?: string` ve `published?: boolean` alanlari eklendi.
+- `src/app/cg38/page.tsx`:
+  - Projeler JSON textarea yerine kart/form editor ile yonetiliyor.
+  - Proje ekleme, silme, yukari/asagi siralama, baslik/aciklama/kategori/teknolojiler/linkler duzenleme eklendi.
+  - Proje silme icin tarayici onayi eklendi.
+  - Proje gorseli URL ve upload destegi eklendi.
+  - `published` toggle ile taslak/yayinda durumu eklendi.
+  - `featured` toggle korunarak one cikan kontrolu form UI'a tasindi.
+- `src/app/projects/page.tsx`:
+  - Ana sitede sadece `published !== false` projeler gosteriliyor.
+  - Proje `imageUrl` varsa kartin ustunde gosteriliyor.
+- Dogrulama:
+  - `npm install` calisti; npm audit 4 zafiyet raporladi, otomatik fix uygulanmadi.
+  - `npm run typecheck` basarili.
+  - `npm run build` ilk denemede Google Fonts ag erisimi yuzunden dustu; onayli ag erisimiyle basarili. Son degisikliklerden sonra tekrar basarili.
+  - `npm run lint` calismadi; ESLint 9 `eslint.config.*` bekliyor, repo bu config'i icermiyor.
+  - Yerel dev server `http://localhost:3001` uzerinde calisiyor.
+  - Local smoke test: `/projects` 200, `/cg38` 200.
+
+## Build Hata Notu
+- 2026-05-02: Turbopack/PostCSS `src/app/globals.css` icin generated CSS satirinda bozuk `data-[state=checked]` selector parse hatasi verdi.
+- Kaynak `src/app/globals.css` 237 satir ve hatadaki 2817. satir source dosyada yoktu; sorun uretilmis CSS/cache kaynakliydi.
+- `.next` klasoru temizlendi ve `npm run build` temiz cache ile basarili tamamlandi.
+- Dev server acikken `.next` silinirse dev server bozuk state'e giriyor ve `build-manifest.json` ENOENT/500 hatalari uretiyor.
+- Dev ortamda Turbopack ayni CSS selector hatasini tekrar uretti; dev server `npm run dev -- --webpack` ile baslatildi.
+- Webpack dev server `http://localhost:3001` uzerinde calisiyor; smoke test `/`, `/projects`, `/cg38` icin 200 dondu.
+
+## ADIM 4 Animasyonlar
+- `src/components/LayoutShell.tsx`:
+  - Sayfa gecisleri icin Framer Motion tabanli hafif opacity/y animasyonu eklendi.
+  - `prefers-reduced-motion` icin `useReducedMotion` ile animasyonlar kisiliyor.
+- `src/app/page.tsx`:
+  - Hero basligi icin typewriter efekti eklendi.
+  - Reduced motion aktifse metin direkt gosteriliyor.
+- `src/components/Navbar.tsx`:
+  - Scroll sonrasi blur daha belirgin hale getirildi.
+  - Navbar yuksekligi, logo ve marka yazisi scroll durumunda kuculuyor.
+  - Reduced motion destegi eklendi.
+- `src/app/projects/page.tsx`:
+  - Proje kartlari viewport'a girince tetiklenen scroll animasyonu kullaniyor.
+  - Hover efekti reduced motion durumunda kapaniyor.
+- `src/components/ui/button.tsx` ve `src/app/globals.css`:
+  - Butonlara CSS tabanli hafif ripple efekti eklendi.
+  - Global reduced-motion CSS guard eklendi.
+- Dogrulama:
+  - `npm run typecheck` basarili.
+  - Dev server build cache cakismasini onlemek icin kapatildi, `.next` temizlendi.
+  - `npm run build` basarili.
+  - Dev server `npm run dev -- --webpack` ile yeniden baslatildi.
+  - Smoke test: `/`, `/projects`, `/cg38` 200.
+
+## ADIM 5 Hata/SEO/Accessibility
+- `public/robots.txt`:
+  - Sitemap domain'i `https://ycagdass.dev` yerine `https://cagdass.dev` yapildi.
+- `src/app/projects/layout.tsx`:
+  - Sayfa title'i `Projects` yerine `Projeler` yapildi.
+  - Description, Open Graph ve Twitter metadata eklendi.
+- `src/app/about/layout.tsx`:
+  - Title `Hakkımda` yapildi.
+  - Description, Open Graph ve Twitter metadata eklendi.
+- `src/components/Navbar.tsx`:
+  - GitHub icon linkine `aria-label` ve `title` eklendi.
+- Guvenli API testleri:
+  - Local `/api/cms/session`: 200.
+  - Local `/api/cms/content`: yetkisiz durumda 401.
+  - Dummy `/api/cms/login`: 401.
+  - Yetkisiz `/api/cms/upload`: 401.
+- Test notu:
+  - `npm run lint` calismiyor; ESLint 9 `eslint.config.*` bekliyor, repo config icermiyor.
+  - `npm run typecheck` basarili.
+  - `npm run build` basarili.
+
+## Docker Deploy/Test
+- `sudo docker compose up -d --build` calisti ve `cagdass-site` yeniden baslatildi.
+- Container durumu: `Up`, port `127.0.0.1:3000->3000/tcp`.
+- Docker HTTP kontrolleri:
+  - `http://127.0.0.1:3000`: 200.
+  - `http://127.0.0.1:3000/projects`: 200.
+  - `http://127.0.0.1:3000/api/cms/session`: 200.
+- Docker izin testleri:
+  - `/app/data/site-content.json`: yazilabilir.
+  - `/app/data/backups`: yazilabilir.
+  - `/app/public/uploads`: yazilabilir.
+- Canli Cloudflare/Tunnel kontrolleri:
+  - `https://cagdass.dev`: 200.
+  - `https://cagdass.dev/projects`: 200.
+  - `https://cagdass.dev/api/cms/session`: 200, Cloudflare Access redirect yok.
+- Dev server notu:
+  - Yerel `npm run dev -- --webpack` server testlerden sonra kapatildi; aktif servis Docker container.
+
+## ADIM 6 Kapsamli CMS
+- `codex.txt` guncel gorevi uygulandi: `/cg38` admin paneli sekmeli CMS yapisina tasindi.
+- Admin panel bolumleri:
+  - Genel
+  - Ana Sayfa
+  - Hakkimda
+  - Teknolojiler
+  - Projeler
+  - Yazilar
+  - Medya
+  - Ayarlar
+- `src/lib/siteContentShared.ts`:
+  - `EditableArticle` tipi eklendi.
+  - `EditableTechnology` tipi eklendi.
+  - `SiteContent` schema'si `articles`, `technologies`, ek `home`, ek `about`, `footerText` ve `technologiesEnabled` alanlariyla genisletildi.
+  - Default articles/technologies/home/about degerleri eklendi.
+- `src/lib/siteContent.ts`:
+  - Geriye uyumlu merge genisletildi.
+  - Eksik `articles`, `technologies`, `typewriterWords`, `skills` ve item array alanlari default degerlerle tamamlanacak sekilde duzenlendi.
+- `data/site-content.json`:
+  - Mevcut veri korunarak yeni schema alanlari eklendi.
+  - Ornek yazilar bolumu eklendi; ornek yazi `published: false` olarak birakildi.
+  - Teknoloji listesi eski hardcoded listeye yakin sekilde data modeline tasindi.
+- `src/app/cg38/page.tsx`:
+  - Admin UI tab yapisina gecti.
+  - Yazilar icin ekle/duzenle/sil/sirala, kapak gorseli upload, taslak/yayinda, one cikan, kategori, etiket, tarih, okuma suresi, dil ve order alanlari eklendi.
+  - Teknolojiler icin ekle/duzenle/sil/sirala, icon key/URL, kategori, aciklama/seviye ve gorunur/gizli alanlari eklendi.
+  - Hakkimda icin baslik, profil karti bilgileri, yetenekler, deneyim, egitim ve sertifikalar eklendi.
+  - Ana sayfa icin typewriter kelimeleri ve CTA linkleri eklendi.
+  - Medya tabinda logo/profil upload akisi korundu.
+  - Silme islemlerinde `confirm` korunuyor.
+- `src/app/articles/page.tsx`:
+  - Hardcoded "yakinda" ekrani yerine CMS yazilari listeleniyor.
+  - Sadece `published !== false` yazilar gorunuyor.
+  - `order` alanina gore siralama yapiliyor.
+- `src/app/about/page.tsx` ve `src/components/about/*`:
+  - Teknolojiler data modelinden okunuyor.
+  - Sadece `visible !== false` teknolojiler gosteriliyor.
+  - Profil karti ve iletisim linkleri CMS verisini kullaniyor.
+  - Deneyim/egitim/sertifika/yetenek alanlari varsa public sayfada kart olarak gorunuyor.
+- `src/app/page.tsx`:
+  - Ana sayfa CTA linkleri CMS verisinden okunuyor.
+  - `typewriterWords` alani ikinci hero satirinda kullaniliyor.
+- `src/components/Footer.tsx`:
+  - Footer metni `site.footerText` alanindan okunuyor.
+- Test sonuclari:
+  - `node -e JSON.parse(...)`: basarili.
+  - `npm run typecheck`: basarili.
+  - `npm run build`: basarili.
+  - `docker compose up -d --build`: basarili. Ilk `sudo docker compose` denemesi sudo parola/TTY nedeniyle calismadi; onayli docker socket erisimiyle `docker compose` calisti.
+  - `curl -I http://127.0.0.1:3000`: 200.
+  - `curl -I http://127.0.0.1:3000/articles`: 200.
+  - `curl -I http://127.0.0.1:3000/about`: 200.
+  - `curl -I http://127.0.0.1:3000/cg38`: 200.
+  - Docker yazma izinleri:
+    - `/app/data/site-content.json`: yazilabilir.
+    - `/app/data/backups`: yazilabilir.
+    - `/app/public/uploads`: yazilabilir.
+- Kalan isler:
+  - Manuel admin login sonrasi gercek save/upload akisi kullanici oturumuyla test edilmeli.
+  - Articles icin tekil detay sayfasi istenirse ayrica eklenmeli.
+  - Derin mobil, axe/accessibility ve Lighthouse testleri hala ayrica yapilmali.
+
+## ADIM 7 Son Duzeltme Turu
+- `codex.txt` guncel gorevi uygulandi; site tekrar bastan taranmadi, ilgili hero/footer/articles/admin/teknoloji dosyalari uzerinden calisildi.
+- Hero:
+  - `home.heroTitle`, `home.heroDescription`, `home.enableTypewriter` alanlari eklendi.
+  - Public ana sayfa typewriter varsayilan kapali olacak sekilde guncellendi.
+  - Varsayilan baslik: `Yusuf Çağdaş'ın dünyasına hoş geldin`.
+  - Typewriter kelimeleri admin panelde Ana Sayfa > Gelismis bolumunde tutuluyor.
+- Footer:
+  - Varsayilan footer metni `© 2026 Yusuf Çağdaş. Tüm hakları saklıdır.` yapildi.
+  - Footer metni admin panelden duzenlenebilir.
+  - GitHub/Telegram/Instagram ikonlari sadece ilgili link doluysa gorunuyor.
+- Articles:
+  - `/articles/[slug]` detay route'u eklendi.
+  - `/articles` kartlari tamamen tiklanabilir hale getirildi ve `/articles/{slug}` hedefini kullaniyor.
+  - Public listede sadece `published !== false` yazilar gorunuyor.
+  - Slug, imageUrl, tags, published ve order alanlari normalize ediliyor.
+  - Bos/gecersiz/kirilan gorseller public kartlarda bozuk img alani uretmeyecek sekilde gizleniyor.
+  - Detay sayfasinda baslik, tarih, kategori, etiketler, okuma suresi, kapak gorseli, icerik ve geri don linki var.
+  - Detay metadata title/description/openGraph/twitter alanlari eklendi.
+  - `/articles/[slug]` dinamik calisiyor; proxy ile bulunmayan veya yayinda olmayan slug'lar gercek HTTP 404 donuyor.
+  - Sitemap published article detaylarini ekliyor.
+- Admin panel:
+  - Ana Sayfa tabina `Ana Sayfa Başlığı`, `Hero Açıklaması` ve typewriter toggle eklendi.
+  - Kaydet butonu ustte ve altta erisilebilir.
+  - Proje/yazi/teknoloji listeleri kompakt ozet + `Düzenle` modeliyle calisiyor; tum inputlar varsayilan acik degil.
+  - Teknoloji ekleme ve silmede confirm metinleri eklendi.
+  - Teknoloji alanlari `Ad`, `Kategori`, `Açıklama / Seviye`, `Icon key`, `Icon URL`, `Görünür mü?` seklinde ayrildi.
+  - Teknoloji ikon yardim metni eklendi; iconUrl > iconKey > sadece isim mantigi kullaniliyor.
+  - Upload sonrasi hangi alana URL yazildigi mesaj olarak gosteriliyor.
+- About teknolojiler:
+  - Sadece `visible !== false` teknolojiler gorunuyor.
+  - Sira `order` alanina gore normalize ediliyor.
+  - iconUrl veya iconKey bozuksa kirik gorsel yerine sadece teknoloji adi kalacak sekilde fallback eklendi.
+- Guvenlik/altyapi:
+  - `/api/cms/*` Access altina alinmadi.
+  - `CF_ACCESS_REQUIRED=false` mantigina dokunulmadi.
+  - Admin login/session/TOTP/save/upload akislari korunarak dar kapsamli UI/data degisiklikleri yapildi.
+- Degisen ana dosyalar:
+  - `src/lib/siteContentShared.ts`
+  - `src/lib/siteContent.ts`
+  - `src/app/page.tsx`
+  - `src/components/Footer.tsx`
+  - `src/app/articles/page.tsx`
+  - `src/app/articles/[slug]/page.tsx`
+  - `src/app/about/page.tsx`
+  - `src/components/about/ContentCards.tsx`
+  - `src/app/cg38/page.tsx`
+  - `src/app/sitemap.ts`
+  - `src/proxy.ts`
+  - `data/site-content.json`
+- Test sonuclari:
+  - `node -e JSON.parse(...)`: basarili.
+  - `npm run typecheck`: basarili.
+  - `npm run build`: basarili.
+  - `docker compose up -d --build`: basarili.
+  - Local Docker:
+    - `/`: 200.
+    - `/about`: 200.
+    - `/articles`: 200.
+    - `/cg38`: 200.
+    - `/articles/cms-notlari`: 200.
+    - `/articles/test`: 404.
+    - `/app/data/site-content.json`: yazilabilir.
+    - `/app/data/backups`: yazilabilir.
+    - `/app/public/uploads`: yazilabilir.
+  - Canli Cloudflare:
+    - `https://cagdass.dev`: 200.
+    - `https://cagdass.dev/about`: 200.
+    - `https://cagdass.dev/articles`: 200.
+    - `https://cagdass.dev/articles/cms-notlari`: 200.
+    - `https://cagdass.dev/articles/test`: 404.
+- Kalan isler:
+  - Tarayici MCP kontrolu yapilamadi; ortamda Google Chrome executable yok (`/opt/google/chrome/chrome`).
+  - Manuel admin login sonrasi gercek save/upload akisi kullanici oturumuyla test edilmeli.
+  - Derin mobil, axe/accessibility ve Lighthouse testleri hala ayrica yapilmali.
+
+## ADIM 8 Yazilar Coklu Gorsel Duzeltmesi
+- Kullanici istegiyle yazilar sistemi tekrar duzeltildi:
+  - Article modeline `imageUrls: string[]` alani eklendi.
+  - Eski `imageUrl` kapak gorseli olarak korunuyor.
+  - `imageUrls` yazı içi/galeri gorselleri olarak public detay sayfasinda gosteriliyor.
+  - Normalize akisi `imageUrls` alanini geriye uyumlu sekilde default bos array'e tamamliyor.
+- Admin panel:
+  - Yazı duzenleme formuna `Yazı İçi Görseller` bolumu eklendi.
+  - Birden fazla gorsel ayni anda yuklenebiliyor.
+  - Eklenen gorseller tek tek URL olarak duzenlenebiliyor veya silinebiliyor.
+  - Upload yardim metni `ext` yerine gercek format ornekleriyle guncellendi.
+- Upload formatlari:
+  - Mevcut PNG/JPG/JPEG/WEBP/SVG destegi korundu.
+  - AVIF ve GIF destegi eklendi.
+  - MIME ve dosya imzasi kontrolu PNG/JPG/WEBP/AVIF/GIF/SVG icin guncellendi.
+- Public yazı detay:
+  - Kapak gorseli ustte kontrollu aspect-video alanda kaliyor.
+  - Yazı icindeki ek gorseller detay sayfasinda grid galeri olarak gorunuyor.
+  - Kirik gorsel olursa client fallback ile gorsel gizleniyor.
+- `data/site-content.json`:
+  - Yayindaki `/articles/1` yazisina mevcut upload klasorundeki 3 ek gorsel `imageUrls` olarak baglandi.
+  - Kapak gorseli mevcut JPG olarak korundu.
+- Degisen dosyalar:
+  - `src/lib/siteContentShared.ts`
+  - `src/lib/imageValidation.ts`
+  - `src/app/api/cms/upload/route.ts`
+  - `src/components/articles/SafeArticleImage.tsx`
+  - `src/app/articles/[slug]/page.tsx`
+  - `src/app/cg38/page.tsx`
+  - `data/site-content.json`
+- Test sonuclari:
+  - `npm run typecheck`: basarili.
+  - `npm run build`: basarili.
+  - `docker compose up -d --build`: basarili.
+  - Local Docker `/articles/1`: 200.
+  - Local Docker `/articles/1` HTML'inde 4 upload gorseli gorundu.
+  - Canli `https://cagdass.dev/articles/1`: 200.
+  - Canli `https://cagdass.dev/articles/1` HTML'inde 4 upload gorseli gorundu.
+  - Canli `https://cagdass.dev/articles/not-real`: 404.
+  - `/app/data/site-content.json`, `/app/data/backups`, `/app/public/uploads`: yazilabilir.
+- MCP notu:
+  - `chrome-devtools` ve `playwright` MCP tekrar denendi; ortamda `/opt/google/chrome/chrome` olmadigi icin acilamadi.
+  - `npx playwright install chrome` denendi; sudo parola/TTY gerektirdigi icin Chrome kurulumu tamamlanamadi.
+  - Bu nedenle son kontrol HTTP/HTML ve Docker/canli endpoint kontrolleriyle yapildi.
+
+## ADIM 9 GitHub Projeleri ve Ceviri Duzeltmeleri
+- Projeler:
+  - GitHub public repo otomatik cekme eklendi.
+  - `src/lib/githubProjects.ts` eklendi; GitHub API `users/{username}/repos` uzerinden repo listesi aliniyor.
+  - Public `/api/site-content` ve admin `/api/cms/content` GET cevaplari GitHub projeleriyle zenginlestiriliyor.
+  - Admin panelde Projeler sekmesine ayarlar eklendi:
+    - `GitHub'dan otomatik çek`
+    - `GitHub kullanıcı adı`
+    - `Fork projeleri dahil et`
+  - Admin tarafinda ayni repo `githubFullName` veya GitHub URL ile eslesirse manuel baslik/aciklama/kategori/gorsel/yayin durumu ayarlari GitHub verisinin uzerine yaziliyor.
+  - GitHub kaynakli projeler public kartlarda `GitHub` rozeti, yildiz sayisi ve guncellenme tarihi gosterebiliyor.
+  - `data/site-content.json` icinde GitHub ayarlari eklendi; mevcut `Islamic-Explorers-science-app` kaydi `ycagdass/Islamic-Explorers-science-app` repo adi ile eslestirildi.
+- Ceviriler:
+  - TR yazilarda `Makale` yerine site diliyle uyumlu `Yazı` metinleri kullanildi.
+  - `kritlerlere` yazim hatasi `kriterlere` olarak duzeltildi.
+  - `Github` yazimi `GitHub` olarak duzeltildi.
+  - Footer copyright TR/EN metinleri guncellendi.
+  - EN articles metinlerindeki temel gramer hatalari duzeltildi.
+- Degisen dosyalar:
+  - `src/lib/siteContentShared.ts`
+  - `src/lib/githubProjects.ts`
+  - `src/app/api/site-content/route.ts`
+  - `src/app/api/cms/content/route.ts`
+  - `src/app/cg38/page.tsx`
+  - `src/app/projects/page.tsx`
+  - `data/site-content.json`
+  - `src/locales/tr/common.json`
+  - `src/locales/en/common.json`
+  - `src/locales/tr/articles.json`
+  - `src/locales/en/articles.json`
+  - `src/locales/tr/articles_list.json`
+  - `src/locales/en/articles_list.json`
+  - `src/locales/tr/home.json`
+  - `src/locales/tr/about.json`
+  - `src/locales/en/about.json`
+- Test sonuclari:
+  - `data/site-content.json` JSON parse: basarili.
+  - Tum TR/EN locale JSON parse kontrolleri: basarili.
+  - `npm run typecheck`: basarili.
+  - `npm run build`: basarili.
+  - `docker compose up -d --build`: basarili.
+  - Local `/projects`: 200.
+  - Local `/api/site-content`: `projectCount=9`, `githubCount=8`.
+  - Canli `https://cagdass.dev/projects`: 200.
+  - Canli `https://cagdass.dev/api/site-content`: `projectCount=9`, `githubCount=8`.
+  - `/app/data/site-content.json` ve `/app/public/uploads`: yazilabilir.
+- Kalan not:
+  - GitHub API erisilemez veya rate limit olursa sistem mevcut admin JSON projelerine dusuyor; site kirilmiyor.

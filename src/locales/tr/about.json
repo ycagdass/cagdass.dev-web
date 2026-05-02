@@ -1,0 +1,30 @@
+{
+  "profile": {
+    "name": "Yusuf Çağdaş",
+    "subtitle": "Lise öğrencisi • Yazılım • Elektronik • 3D Tasarım",
+    "photo": "Profil Fotoğrafı"
+  },
+  "about": "Ben Yusuf Çağdaş. Lise öğrencisiyim; yazılım, elektronik ve 3D tasarım alanlarında kendimi geliştiriyorum. Arduino, mikrodenetleyiciler, web teknolojileri ve CAD modelleme ile fikirlerimi çalışan prototiplere dönüştürmeyi seviyorum. Yarışmalar, kişisel projeler ve denemeler üzerinden öğreniyor; her projede daha temiz, kullanışlı ve üretilebilir çözümler kurmaya çalışıyorum.",
+  "nav": {
+    "projects": "Projelerim",
+    "articles": "Yazılarım",
+    "support": "Beni Destekle",
+    "mail": "E-posta",
+    "contactme": "İletişime Geç"
+  },
+  "stats": {
+    "stats": "İstatistikler",
+    "stars": "GitHub Yıldızı",
+    "cont": "Katılım",
+    "contgraph": "Katılım Grafiği",
+    "repo": "Depo",
+    "act": "{{count}} Aktif",
+    "com": "Topluluk"
+  },
+  "tool-tech": "Araçlar & Teknolojiler",
+  "spotify": {
+    "playing": "Dinliyor",
+    "open": "Spotify'da Aç"
+  },
+  "aboutMe": "Ben Kimim?"
+}

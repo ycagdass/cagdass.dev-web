@@ -1,0 +1,48 @@
+{
+  "readDur": "{{minutes}} min read",
+  "backToArticles": "Back to articles",
+  "otpTitle": "In this article",
+  "writtenBy": "Written by",
+  "viewText": "Viewed {{count}} times",
+  "commentText": "{{count}} comment",
+  "like": "Like",
+  "liked": "Liked",
+  "likeText": "{{count}} like",
+  "aboutArticle": "About article",
+  "loading": "Article Loading",
+  "pleaseWait": "Please wait...",
+  "notFound": "Article Not Found",
+  "notFoundDesc": "This article could not be found. It may have been deleted or moved.",
+  "share": {
+    "state1": "Share",
+    "state2": "Link Copied to Clipboard"
+  },
+  "comments": {
+    "header": "Comments",
+    "countComment": "{{count}} comment shared",
+    "yourName": "Your name...",
+    "writeCom": "Write a comment...",
+    "shareCom": "Share Comment",
+    "like": "Like",
+    "dislike": "Dislike"
+  },
+  "likedPost": "Liked this article",
+  "likeToasts": {
+    "buttonOkay": "Okay",
+    "STATUS_FAILURE": "An error occurred...",
+    "SESSION_ID_INVALID": "Session ID is invalid, please allow browser cookies.",
+      "USER_NOT_LIKED_POST": "You have not liked this article yet, so you cannot unlike it."
+  },
+  "commentDelete": {
+    "buttonOkay": "Okay",
+    "SUCCESS": "Successfully",
+    "FAILURE": "An error occurred...",
+    "code": {
+      "COMMENT_NOT_FOUND": "Comment not found in database, it may be deleted before.",
+      "SID_DOES_NOT_MATCH": "You are not owner of this comment, so you can't delete it",
+      "DELETE_SUCCESS": "Comment successfully deleted."
+    }
+  },
+  "noAnyCommentSharedTT": "No comments yet",
+  "noAnyCommentSharedDC": "Be the first to comment! Share your thoughts and start the conversation."
+}

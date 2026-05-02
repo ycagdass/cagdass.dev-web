@@ -1,0 +1,14 @@
+{
+  "loading": "Article list is loading",
+  "pleaseWait": "Please wait...",
+  "allTitle": "Articles",
+  "allDescription": "You can find all of my articles here",
+  "searchPlaceholder": "Search in articles...",
+  "found": "{{count}} article found",
+  "readDur": "{{minutes}} min read",
+  "nPTitle": "Articles Not Found",
+  "nPDesc": "No articles matching these criteria were found. Try different search terms.",
+  "prev": "Previous",
+  "next": "Next",
+  "all": "All"
+}

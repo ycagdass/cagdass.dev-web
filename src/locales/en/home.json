@@ -1,0 +1,12 @@
+{
+  "hero": {
+    "1": "Welcome to",
+    "2": "ycagdass"
+  },
+  "heroButtons": {
+    "viewProjects": "View Projects",
+    "aboutMe": "About Me",
+    "readArticles": "Read Articles"
+  },
+  "desc": "You can find blogs, projects and everything about me!"
+}
